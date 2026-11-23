@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Design tokens ───────────────────────── */
+
+@theme {
+  /* Mobile layout kicks in below 810px. Kept in rem (= 810px) because
+     Tailwind sorts breakpoints numerically and the defaults are rem. */
+  --breakpoint-md: 50.625rem;
+
+  --color-bg: #f9f8f6;
+  --color-ink: #141414;
+  --color-ink-2: #656565;
+  --color-ink-3: #a4a4a4;
+  --color-hairline: rgb(0 0 0 / 0.08);
+  --color-selection: rgb(0 0 0 / 0.06);
+  --color-accent: #ff0000;
+
+  --shadow-float:
+    0 0 0 1px rgb(0 0 0 / 0.04), 0 1px 2px rgb(0 0 0 / 0.08),
+    0 4px 6px rgb(0 0 0 / 0.04), 0 24px 40px -16px rgb(0 0 0 / 0.08);
+  --shadow-button: 0 1px 1px rgb(0 0 0 / 0.12), 0 1.5px 3px rgb(0 0 0 / 0.2);
+
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    25% {
+      translate: 0 -6px;
+    }
+    75% {
+      translate: 0 6px;
+    }
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-mono:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ───────────────────────── Type styles ───────────────────────── */
+
+@utility type-display {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-weight: 350;
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 1;
+  letter-spacing: -0.04em;
+}
+
+@utility type-label {
+  font-family:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 550;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+@layer base {
+  html {
+    background-color: #f9f8f6;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    letter-spacing: -0.02em;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Lenis recommended styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ───────────────────────── Hero art mask ─────────────────────────
+   --reveal is driven by a motion value (0 → 1). Stops go from
+   (50%, 50%, 50%, 50%) to (0%, 10%, 90%, 100%): a centre-outward wipe
+   that settles into the soft edge fade. */
+.hero-art-mask {
+  --reveal: 0;
+  --hero-mask: linear-gradient(
+    to left,
+    transparent calc(50% - 50% * var(--reveal)),
+    #000 calc(50% - 40% * var(--reveal)),
+    #000 calc(50% + 40% * var(--reveal)),
+    transparent calc(50% + 50% * var(--reveal))
+  );
+  -webkit-mask-image: var(--hero-mask);
+  mask-image: var(--hero-mask);
+}
+
+/* Mobile: the art sits below the headline, so also fade it top & bottom. */
+@media (max-width: 809.98px) {
+  .hero-art-mask {
+    --hero-mask-y: linear-gradient(
+      to bottom,
+      transparent,
+      #000 10%,
+      #000 90%,
+      transparent
+    );
+    -webkit-mask-image: var(--hero-mask), var(--hero-mask-y);
+    -webkit-mask-composite: source-in;
+    mask-image: var(--hero-mask), var(--hero-mask-y);
+    mask-composite: intersect;
+  }
+}
+
+/* ───────────────────────── Reduced motion ───────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .service-block-content {
+    filter: none !important;
+  }
+}
